@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { APP_NAME } from "@/constants";
 
 const formSchema = z.object({
-	email: z.string().email(),
+	email: z.email(),
 	password: z.string().min(1, { message: "Password is required" }),
 });
 
