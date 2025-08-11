@@ -65,7 +65,6 @@ export const recipe = pgTable("recipe", {
 	image: text("image"),
 	time: text("time"),
 	rating: text("rating"),
-	calories: text("calories"),
 	tags: text("tags"),
 	author: text("author"),
 	servings: text("servings"),

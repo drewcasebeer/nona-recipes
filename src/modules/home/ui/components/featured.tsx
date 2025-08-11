@@ -14,7 +14,6 @@ type RecipeDetail = {
 	image: string;
 	time: string;
 	rating: number;
-	calories: number;
 	tags: string[];
 	author: string;
 	servings: number;
@@ -33,7 +32,6 @@ const recipes: RecipeDetail[] = [
 		image: "/creamy-garlic-mushroom-pasta.png",
 		time: "25 min",
 		rating: 4.8,
-		calories: 520,
 		tags: ["Vegetarian", "Quick"],
 		author: "Jamie Brooks",
 		servings: 2,
@@ -67,7 +65,6 @@ const recipes: RecipeDetail[] = [
 		image: "/roasted-lemon-herb-chicken.png",
 		time: "1 hr 15 min",
 		rating: 4.9,
-		calories: 640,
 		tags: ["Dinner", "Family"],
 		author: "Ava Martinez",
 		servings: 4,
@@ -98,7 +95,6 @@ const recipes: RecipeDetail[] = [
 		image: "/spicy-tuna-poke-bowl.png",
 		time: "20 min",
 		rating: 4.7,
-		calories: 480,
 		tags: ["Gluten-Free", "Fresh"],
 		author: "Kenji Ito",
 		servings: 2,
@@ -130,7 +126,6 @@ const recipes: RecipeDetail[] = [
 		image: "/avocado-toast-poached-egg-chili.png",
 		time: "10 min",
 		rating: 4.6,
-		calories: 350,
 		tags: ["Breakfast", "Easy"],
 		author: "Sofia Nguyen",
 		servings: 1,
@@ -158,7 +153,6 @@ const recipes: RecipeDetail[] = [
 		image: "/creamy-tomato-basil-soup.png",
 		time: "35 min",
 		rating: 4.5,
-		calories: 300,
 		tags: ["Vegetarian", "Soup"],
 		author: "Marco Rossi",
 		servings: 3,
@@ -187,7 +181,6 @@ const recipes: RecipeDetail[] = [
 		image: "/placeholder.png",
 		time: "25 min",
 		rating: 4.4,
-		calories: 420,
 		tags: ["Healthy", "Vegetarian"],
 		author: "Layla Haddad",
 		servings: 4,
@@ -236,7 +229,6 @@ export const Featured = () => {
 						image={r.image}
 						time={r.time}
 						rating={r.rating}
-						calories={r.calories}
 						tags={r.tags}
 						author={r.author}
 					/>

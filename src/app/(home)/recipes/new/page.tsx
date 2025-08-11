@@ -87,7 +87,6 @@ export default function NewRecipePage() {
             const res = await addRecipe.mutateAsync({
                 ...form,
                 rating: 0,  // Add a default rating
-                calories: 0,  // Add a default calorie count
                 servings: Number(form.servings),
                 author: form.author || "Anonymous",
                 tags: form.tags || []

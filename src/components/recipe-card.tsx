@@ -13,7 +13,6 @@ type Props = {
 	image?: string;
 	time?: string;
 	rating?: number;
-	calories?: number;
 	tags?: string[];
 	author?: string;
 };
@@ -25,7 +24,6 @@ export function RecipeCard({
 	image = "/delicious-recipe.png",
 	time = "30 min",
 	rating = 4.5,
-	calories = 450,
 	tags = ["Easy"],
 	author = "Chef",
 }: Props) {
@@ -83,10 +81,6 @@ export function RecipeCard({
 				<div className="flex items-center gap-2">
 					<Clock className="h-3.5 w-3.5" />
 					<span>{time}</span>
-				</div>
-				<div className="flex items-center gap-2">
-					<Flame className="h-3.5 w-3.5 text-amber-600" />
-					<span>{calories} kcal</span>
 				</div>
 				<div className="truncate">By {author}</div>
 			</CardFooter>
