@@ -20,8 +20,8 @@ export const HomeHero = () => {
 						<div className="mt-6">
 							<SearchBar
 								placeholder="Search recipes, ingredients, cuisines..."
-								onSearch={(query, filter) => {
-									console.log("Search:", query, filter);
+								onSearch={(query) => {
+									console.log("Search:", query);
 								}}
 							/>
 						</div>
