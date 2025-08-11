@@ -1,12 +1,13 @@
 'use client';
 
 import Link from "next/link";
-import { ChefHat, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { APP_NAME } from "@/constants";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { DarkModeToggle } from "./dark-mode-toggle";
 import Image from "next/image";
+import { UserButton } from "./user-button";
 
 export const NavBar = () => {
 	const [open, setOpen] = useState(false);
@@ -42,9 +43,8 @@ export const NavBar = () => {
 
 					<div className="ml-2 mr-2 w-[1px] h-6 bg-accent" />
 
-					<Button asChild className="bg-primary hover:bg-primary/90">
-						<Link href="/sign-in">Sign in</Link>
-					</Button>
+					<UserButton />
+					
 					<Button
 						variant="ghost"
 						size="icon"
@@ -73,9 +73,7 @@ export const NavBar = () => {
 						<Link href="#" className="rounded-md px-2 py-2 hover:bg-muted">
 							Blog
 						</Link>
-						<Button asChild className="mt-1 bg-primary hover:bg-primary/90">
-							<Link href="/sign-in">Sign in</Link>
-						</Button>
+						<UserButton />
 					</nav>
 				</div>
 			) : null}

@@ -1,12 +1,12 @@
 import { createAvatar } from "@dicebear/core";
-import { botttsNeutral, initials } from "@dicebear/collection";
+import { botttsNeutral, initials, funEmoji } from "@dicebear/collection";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 interface GeneratedAvatarProps {
 	seed: string;
 	className?: string;
-	variant: "botttsNeutral" | "initials";
+	variant: "botttsNeutral" | "initials" | "funEmoji";
 }
 
 export const GeneratedAvatar = ({ seed, className, variant }: GeneratedAvatarProps) => {
@@ -22,12 +22,15 @@ export const GeneratedAvatar = ({ seed, className, variant }: GeneratedAvatarPro
 			fontWeight: 500,
 			fontSize: 42,
 		});
+	} else if (variant === "funEmoji") {
+		avatar = createAvatar(funEmoji, {
+			seed,
+		});
 	}
-
-	return (
-		<Avatar className={cn(className)}>
-			<AvatarImage src={avatar?.toDataUri()} alt="Avatar" />
-			<AvatarFallback>{seed.charAt(0).toUpperCase()}</AvatarFallback>
-		</Avatar>
-	);
+		return (
+			<Avatar className={cn(className)}>
+				<AvatarImage src={avatar?.toDataUri()} alt="Avatar" />
+				<AvatarFallback>{seed.charAt(0).toUpperCase()}</AvatarFallback>
+			</Avatar>
+		);
 };

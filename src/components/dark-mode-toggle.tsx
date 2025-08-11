@@ -1,10 +1,9 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Button } from "./ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useEffect, useState } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 export const DarkModeToggle = () => {
 	const { theme, setTheme } = useTheme();
@@ -19,7 +18,9 @@ export const DarkModeToggle = () => {
 	}, [setTheme]);
 
 	// Prevents hydration mismatch
-	if (!mounted) return null;
+	if (!mounted) return (
+		<Skeleton className="w-16 h-8" />
+	);
 
 	const updateTheme = (value: string) => {
 		setTheme(value);
