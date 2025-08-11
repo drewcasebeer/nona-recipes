@@ -33,8 +33,8 @@ export const NavBar = () => {
 				</nav>
 
 				<div className="flex items-center gap-2">
-					<Button asChild variant="ghost" className="hidden sm:inline-flex">
-						<Link href="/new-recipe">Submit Recipe</Link>
+					<Button asChild className="bg-primary hover:bg-primary/90">
+						<Link href="/recipes/new">Submit Recipe</Link>
 					</Button>
 
 					<div className="mr-2 w-[1px] h-6 bg-accent" />
@@ -44,7 +44,7 @@ export const NavBar = () => {
 					<div className="ml-2 mr-2 w-[1px] h-6 bg-accent" />
 
 					<UserButton />
-					
+
 					<Button
 						variant="ghost"
 						size="icon"

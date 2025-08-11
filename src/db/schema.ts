@@ -56,3 +56,23 @@ export const verification = pgTable("verification", {
 	createdAt: timestamp("created_at").$defaultFn(() => /* @__PURE__ */ new Date()),
 	updatedAt: timestamp("updated_at").$defaultFn(() => /* @__PURE__ */ new Date()),
 });
+
+// --- Recipe Table ---
+export const recipe = pgTable("recipe", {
+	id: text("id").primaryKey().$defaultFn(() => nanoid()),
+	title: text("title").notNull(),
+	description: text("description"),
+	image: text("image"),
+	time: text("time"),
+	rating: text("rating"),
+	calories: text("calories"),
+	tags: text("tags"),
+	author: text("author"),
+	servings: text("servings"),
+	difficulty: text("difficulty"),
+	cuisine: text("cuisine"),
+	ingredients: text("ingredients"),
+	steps: text("steps"),
+	createdAt: timestamp("created_at").$defaultFn(() => new Date()),
+	updatedAt: timestamp("updated_at").$defaultFn(() => new Date()),
+});

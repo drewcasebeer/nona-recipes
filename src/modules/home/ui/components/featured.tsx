@@ -7,15 +7,6 @@ type Ingredient = {
 	amount: string;
 };
 
-type Nutrition = {
-	calories: number;
-	protein: string;
-	fat: string;
-	carbs: string;
-	fiber?: string;
-	sugar?: string;
-};
-
 type RecipeDetail = {
 	id: string;
 	title: string;
@@ -31,7 +22,6 @@ type RecipeDetail = {
 	cuisine?: string;
 	ingredients: Ingredient[];
 	steps: string[];
-	nutrition: Nutrition;
 };
 
 const recipes: RecipeDetail[] = [
@@ -67,15 +57,7 @@ const recipes: RecipeDetail[] = [
 			"Pour in cream and simmer 2–3 minutes. Stir in half the parmesan.",
 			"Toss in pasta, add a splash of pasta water to loosen, and season to taste.",
 			"Serve topped with remaining parmesan and parsley.",
-		],
-		nutrition: {
-			calories: 520,
-			protein: "17 g",
-			fat: "22 g",
-			carbs: "64 g",
-			fiber: "4 g",
-			sugar: "5 g",
-		},
+		]
 	},
 	{
 		id: "2",
@@ -106,15 +88,7 @@ const recipes: RecipeDetail[] = [
 			"Toss vegetables with olive oil, salt, and pepper; place in roasting pan.",
 			"Set chicken on top and roast 60–75 minutes until juices run clear or 75°C/165°F at the thigh.",
 			"Rest 10 minutes, carve, and serve with the roasted vegetables.",
-		],
-		nutrition: {
-			calories: 640,
-			protein: "48 g",
-			fat: "38 g",
-			carbs: "20 g",
-			fiber: "4 g",
-			sugar: "8 g",
-		},
+		]
 	},
 	{
 		id: "3",
@@ -147,15 +121,7 @@ const recipes: RecipeDetail[] = [
 			"Toss tuna with soy, sesame oil, and half the spicy mayo.",
 			"Assemble bowls with rice, tuna, avocado, cucumber, and scallions.",
 			"Drizzle remaining spicy mayo and sprinkle sesame seeds.",
-		],
-		nutrition: {
-			calories: 480,
-			protein: "28 g",
-			fat: "16 g",
-			carbs: "56 g",
-			fiber: "6 g",
-			sugar: "6 g",
-		},
+		]
 	},
 	{
 		id: "4",
@@ -183,15 +149,7 @@ const recipes: RecipeDetail[] = [
 			"Mash avocado with lemon juice, salt, and pepper.",
 			"Poach egg 3–4 minutes for a runny yolk.",
 			"Spread avocado on toast, top with egg, and sprinkle chili flakes.",
-		],
-		nutrition: {
-			calories: 350,
-			protein: "12 g",
-			fat: "21 g",
-			carbs: "28 g",
-			fiber: "7 g",
-			sugar: "2 g",
-		},
+		]
 	},
 	{
 		id: "5",
@@ -220,15 +178,7 @@ const recipes: RecipeDetail[] = [
 			"Sauté onion in olive oil until translucent. Add garlic and cook 30 seconds.",
 			"Add tomatoes and broth; simmer 15 minutes.",
 			"Blend until smooth, stir in cream and basil, and season to taste.",
-		],
-		nutrition: {
-			calories: 300,
-			protein: "6 g",
-			fat: "18 g",
-			carbs: "30 g",
-			fiber: "5 g",
-			sugar: "12 g",
-		},
+		]
 	},
 	{
 		id: "6",
@@ -259,15 +209,7 @@ const recipes: RecipeDetail[] = [
 			"Whisk olive oil, lemon juice, oregano, salt, and pepper to make dressing.",
 			"Combine quinoa, cucumber, tomatoes, olives, red onion, and feta.",
 			"Toss with dressing and adjust seasoning to taste.",
-		],
-		nutrition: {
-			calories: 420,
-			protein: "12 g",
-			fat: "18 g",
-			carbs: "52 g",
-			fiber: "6 g",
-			sugar: "6 g",
-		},
+		]
 	},
 ];
 
