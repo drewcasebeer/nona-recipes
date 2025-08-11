@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
@@ -57,21 +57,53 @@ export const verification = pgTable("verification", {
 	updatedAt: timestamp("updated_at").$defaultFn(() => /* @__PURE__ */ new Date()),
 });
 
-// --- Recipe Table ---
-export const recipe = pgTable("recipe", {
-	id: text("id").primaryKey().$defaultFn(() => nanoid()),
-	title: text("title").notNull(),
-	description: text("description"),
-	image: text("image"),
-	time: text("time"),
-	rating: text("rating"),
-	tags: text("tags"),
-	author: text("author"),
-	servings: text("servings"),
-	difficulty: text("difficulty"),
-	cuisine: text("cuisine"),
-	ingredients: text("ingredients"),
-	steps: text("steps"),
-	createdAt: timestamp("created_at").$defaultFn(() => new Date()),
-	updatedAt: timestamp("updated_at").$defaultFn(() => new Date()),
+// ----------------------
+// RECIPES
+// ----------------------
+export const recipes = pgTable("recipes", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  title: text('title').notNull(),
+  description: text("description"),
+  servings: integer("servings"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ----------------------
+// RECIPE INGREDIENT GROUPS
+// ----------------------
+export const ingredientGroups = pgTable("ingredient_groups", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  recipeId: text("recipe_id")
+    .notNull()
+    .references(() => recipes.id, { onDelete: "cascade" }),
+  name: text('name'), // e.g., "Cake Batter", "Frosting"
+  sortOrder: integer("sort_order").default(0),
+});
+
+// ----------------------
+// INGREDIENTS
+// ----------------------
+export const ingredients = pgTable("ingredients", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+	groupId: text("group_id")
+		.notNull()
+		.references(() => ingredientGroups.id, { onDelete: "cascade" }),
+  description: text('description').notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// ----------------------
+// RECIPE STEPS
+// ----------------------
+export const recipeSteps = pgTable("recipe_steps", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  recipeId: text("recipe_id")
+    .notNull()
+    .references(() => recipes.id, { onDelete: "cascade" }),
+  description: text("description").notNull(),
+  sortOrder: integer("sort_order").default(0),
 });
