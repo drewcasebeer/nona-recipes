@@ -30,12 +30,12 @@ export function SearchBar({ placeholder = "Search recipes...", onSearch = () => 
 						value={query}
 						onChange={e => setQuery(e.target.value)}
 						placeholder={placeholder}
-						className="w-full rounded-md border bg-background pl-9 pr-3 text-sm outline-none ring-0 focus-visible:border-amber-500 focus-visible:ring-2 focus-visible:ring-amber-200"
+						className="pl-9 pr-3"
 					/>
 				</div>
 			</div>
 
-			<Button type="submit" className="bg-amber-600 hover:bg-amber-600/90">
+			<Button type="submit" className="bg-primary hover:bg-primary/90">
 				Search
 			</Button>
 		</form>

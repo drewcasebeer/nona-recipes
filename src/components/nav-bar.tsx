@@ -12,7 +12,7 @@ export const NavBar = () => {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<header className="sticky top-0 z-40 w-full border-b">
+		<header className="sticky top-0 z-40 w-full border-b bg-secondary">
 			<div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
 				<Link href="/" className="flex items-center gap-2 font-semibold">
 					<Image src="/logo.png" alt="Logo" width={36} height={36} />
@@ -42,7 +42,7 @@ export const NavBar = () => {
 
 					<div className="ml-2 mr-2 w-[1px] h-6 bg-accent" />
 
-					<Button asChild className="bg-amber-600 hover:bg-amber-600/90">
+					<Button asChild className="bg-primary hover:bg-primary/90">
 						<Link href="/sign-in">Sign in</Link>
 					</Button>
 					<Button
@@ -73,7 +73,7 @@ export const NavBar = () => {
 						<Link href="#" className="rounded-md px-2 py-2 hover:bg-muted">
 							Blog
 						</Link>
-						<Button asChild className="mt-1 bg-amber-600 hover:bg-amber-600/90">
+						<Button asChild className="mt-1 bg-primary hover:bg-primary/90">
 							<Link href="/sign-in">Sign in</Link>
 						</Button>
 					</nav>

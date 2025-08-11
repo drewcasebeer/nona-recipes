@@ -32,11 +32,11 @@ export const DarkModeToggle = () => {
 			</SelectTrigger>
 
 			<SelectContent>
-				<SelectItem value="light">light</SelectItem>
-				<SelectItem value="dark">dark</SelectItem>
-				<SelectItem value="system">system</SelectItem>
-				<SelectItem value="tangerine-light">Tangerine light</SelectItem>
-				<SelectItem value="tangerine-dark">Tangerine dark</SelectItem>
+				<SelectItem value="light">Light</SelectItem>
+				<SelectItem value="dark">Dark</SelectItem>
+				<SelectItem value="system">System</SelectItem>
+				<SelectItem value="tangerine-light">Tangerine - Light</SelectItem>
+				<SelectItem value="tangerine-dark">Tangerine - Dark</SelectItem>
 			</SelectContent>
 		</Select>
 

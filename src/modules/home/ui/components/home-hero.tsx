@@ -6,12 +6,11 @@ import { SearchBar } from "./search-bar";
 
 export const HomeHero = () => {
 	return (
-		<section className="relative">
-			<div className="absolute inset-0 -z-10 bg-gradient-to-b from-amber-50 via-orange-50 to-transparent" />
+		<section>
 			<div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
 				<div className="grid items-center gap-8 md:grid-cols-[1.2fr_1fr]">
 					<div>
-						<Badge className="bg-amber-500 hover:bg-amber-500/90 text-white">New</Badge>
+						<Badge className="bg-primary hover:bg-primary/90 text-white">New</Badge>
 						<h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Cook delicious food, simply.</h1>
 						<p className="mt-3 max-w-prose text-muted-foreground">
 							Explore chef-tested recipes with clear steps, helpful tips, and easy filters. From quick weeknights to
@@ -34,6 +33,7 @@ export const HomeHero = () => {
 							))}
 						</div>
 					</div>
+
 					<div className="relative">
 						<div className="aspect-[4/3] w-full overflow-hidden rounded-2xl border shadow-sm">
 							<Image
@@ -45,6 +45,7 @@ export const HomeHero = () => {
 								priority
 							/>
 						</div>
+						
 						<Card className="absolute -bottom-6 -left-6 hidden w-52 rotate-[-3deg] sm:block">
 							<CardHeader className="pb-2">
 								<CardTitle className="flex items-center gap-2 text-base">
@@ -56,7 +57,7 @@ export const HomeHero = () => {
 							<CardContent className="pt-0 text-sm">
 								Creamy Garlic Mushroom Pasta
 								<div className="mt-2 flex items-center gap-1 text-amber-600">
-									<Star className="h-4 w-4 fill-amber-500 text-amber-500" />
+									<Star className="h-4 w-4 fill-primary text-primary" />
 									<span className="font-medium">4.8</span>
 									<span className="text-muted-foreground">· 25 min</span>
 								</div>
