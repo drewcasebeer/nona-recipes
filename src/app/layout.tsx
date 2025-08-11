@@ -5,6 +5,7 @@ import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { ThemeProvider } from "@/components/theme-provider";
+import { NavBar } from "@/components/nav-bar";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -25,8 +26,17 @@ export default function RootLayout({
 			<TRPCReactProvider>
 				<html lang="en" suppressHydrationWarning>
 					<body className={`${inter.className} antialiased`}>
-						<ThemeProvider attribute="class" defaultTheme="system" themes={['light', 'dark', 'system', 'tangerine-light', 'tangerine-dark']} enableSystem disableTransitionOnChange>
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="system"
+							themes={["light", "dark", "system", "tangerine-light", "tangerine-dark"]}
+							enableSystem
+							disableTransitionOnChange
+						>
 							<Toaster />
+
+							<NavBar />
+
 							{children}
 						</ThemeProvider>
 					</body>

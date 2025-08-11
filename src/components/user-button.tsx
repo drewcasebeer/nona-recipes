@@ -18,7 +18,7 @@ import {
 	DrawerTrigger,
 } from "@/components/ui/drawer";
 import { authClient } from "@/lib/auth-client";
-import { ChevronDown, CreditCardIcon, LogOutIcon } from "lucide-react";
+import { ChevronDown, LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,7 @@ export const UserButton = () => {
 	if (isMobile) {
 		return (
 			<Drawer>
-				<DrawerTrigger className="rounded-lg border border-border/10 p-3 w-full flex items-center justify-between bg-white/5 hover:bg-white/10 overflow-hidden gap-x-2">
+				<DrawerTrigger className="rounded-lg border border-border/10 p-3 w-full flex items-center justify-between  overflow-hidden gap-x-2">
 					{data.user.image ? (
 						<Avatar>
 							<AvatarImage src={data.user.image} />
@@ -72,11 +72,6 @@ export const UserButton = () => {
 					</DrawerHeader>
 
 					<DrawerFooter>
-						<Button variant="outline" onClick={() => {}}>
-							<CreditCardIcon className="size-4 text-black" />
-							Billing
-						</Button>
-
 						<Button variant="outline" onClick={onLogout}>
 							<LogOutIcon className="size-4 text-black" />
 							Logout
@@ -108,11 +103,6 @@ export const UserButton = () => {
 				</DropdownMenuLabel>
 
 				<DropdownMenuSeparator />
-
-				<DropdownMenuItem className="cursor-pointer flex items-center justify-between">
-					Billing
-					<CreditCardIcon className="size-4" />
-				</DropdownMenuItem>
 
 				<DropdownMenuItem className="cursor-pointer flex items-center justify-between" onClick={onLogout}>
 					Logout

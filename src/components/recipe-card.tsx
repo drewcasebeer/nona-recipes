@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Clock, Flame, Heart, Star } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -35,7 +34,7 @@ export function RecipeCard({
 			<CardHeader className="relative px-0">
 				<Link href={`/recipes/${id}`} className="block">
 					<div className="aspect-[4/3] w-full overflow-hidden">
-						<Image
+						<img
 							src={image || "/placeholder.png"}
 							alt={`${title} photo`}
 							width={800}
