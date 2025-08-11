@@ -1,1 +1,1 @@
-export const APP_NAME = "Recipe Manager";
+export const APP_NAME = "Nona's Recipes";

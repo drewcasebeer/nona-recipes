@@ -25,7 +25,7 @@ export default function RootLayout({
 			<TRPCReactProvider>
 				<html lang="en" suppressHydrationWarning>
 					<body className={`${inter.className} antialiased`}>
-						<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+						<ThemeProvider attribute="class" defaultTheme="system" themes={['light', 'dark', 'system', 'tangerine-light', 'tangerine-dark']} enableSystem disableTransitionOnChange>
 							<Toaster />
 							{children}
 						</ThemeProvider>
