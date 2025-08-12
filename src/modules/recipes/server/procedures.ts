@@ -8,7 +8,7 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@
 import { recipesInsertSchema, recipesUpdateSchema } from "../schemas";
 
 export const recipesRouter = createTRPCRouter({
-	getRecipeById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+	getOne: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
 		const [existingRecipe] = await db.select().from(recipes).where(eq(recipes.id, input.id));
 
 		if (!existingRecipe) {
@@ -49,7 +49,7 @@ export const recipesRouter = createTRPCRouter({
 				totalPages,
 			};
 		}),
-	addRecipe: protectedProcedure.input(recipesInsertSchema).mutation(async ({ input, ctx }) => {
+	create: protectedProcedure.input(recipesInsertSchema).mutation(async ({ input, ctx }) => {
 		const [createdRecipe] = await db
 			.insert(recipes)
 			.values({

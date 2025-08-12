@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const RecipeIdView = ({ recipeId }: Props) => {
-	const { data, isLoading, error } = trpc.recipes.getRecipeById.useQuery({ id: recipeId });
+	const { data, isLoading, error } = trpc.recipes.getOne.useQuery({ id: recipeId });
 
 	if (isLoading) return <RecipeIdViewLoading />;
 	if (error || !data) return <RecipeIdViewError />;
