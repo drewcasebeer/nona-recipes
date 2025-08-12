@@ -1,15 +1,36 @@
 import { protectedProcedure, createTRPCRouter } from "@/trpc/init";
-import { recipes } from "@/db/schema";
+import { recipeRatings, recipes, user } from "@/db/schema";
 import { db } from "@/db";
 import { z } from "zod";
-import { and, count, desc, eq, ilike } from "drizzle-orm";
+import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { recipesInsertSchema, recipesUpdateSchema } from "../schemas";
 
 export const recipesRouter = createTRPCRouter({
 	getOne: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
-		const [existingRecipe] = await db.select().from(recipes).where(eq(recipes.id, input.id));
+		// Subquery to calculate rating
+		const ratingsSub = db
+			.select({
+				recipeId: recipeRatings.recipeId,
+				rating: sql<number>`CAST(avg(${recipeRatings.rating}) AS FLOAT)`.as("rating"),
+			})
+			.from(recipeRatings)
+			.groupBy(recipeRatings.recipeId)
+			.as("ratings");
+
+
+		const [existingRecipe] = await db
+			.select({
+				...getTableColumns(recipes),
+				rating: ratingsSub.rating,
+				author: sql<string>`${user.name}`.as("author"),
+			})
+			.from(recipes)
+			.leftJoin(ratingsSub, eq(ratingsSub.recipeId, recipes.id))
+			.leftJoin(user, eq(user.id, recipes.userId))
+			.where(eq(recipes.id, input.id));
+
 
 		if (!existingRecipe) {
 			throw new TRPCError({ code: "NOT_FOUND", message: `Recipe not found` });
@@ -28,9 +49,25 @@ export const recipesRouter = createTRPCRouter({
 		.query(async ({ input }) => {
 			const { page, pageSize, search } = input;
 
+			// Subquery to calculate average rating per recipe
+			const ratingsSub = db
+				.select({
+					recipeId: recipeRatings.recipeId,
+					rating: sql<number>`CAST(avg(${recipeRatings.rating}) AS FLOAT)`.as("rating"),
+				})
+				.from(recipeRatings)
+				.groupBy(recipeRatings.recipeId)
+				.as("ratings");
+
 			const data = await db
-				.select()
+				.select({
+					...getTableColumns(recipes),
+					rating: ratingsSub.rating,
+					author: sql`${user.name}`.as("author"),
+				})
 				.from(recipes)
+				.leftJoin(ratingsSub, eq(ratingsSub.recipeId, recipes.id))
+				.leftJoin(user, eq(user.id, recipes.userId))
 				.where(search ? ilike(recipes.title, `%${search}%`) : undefined)
 				.orderBy(desc(recipes.createdAt))
 				.limit(pageSize)

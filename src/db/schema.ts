@@ -68,8 +68,25 @@ export const recipes = pgTable("recipes", {
   title: text('title').notNull(),
   description: text("description"),
   servings: integer("servings"),
+	time: integer("time"), // in minutes
+	calories: integer("calories"),
+	heroImage: text("hero_image"), // URL to image
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ----------------------
+// RECIPE RATINGS
+// ----------------------
+export const recipeRatings = pgTable("recipe_ratings", {
+	id: text("id").primaryKey().$defaultFn(() => nanoid()),
+	userId: text("user_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	recipeId: text("recipe_id")
+		.notNull()
+		.references(() => recipes.id, { onDelete: "cascade" }),
+	rating: integer("rating").notNull(), // e.g., 1 to 5
 });
 
 // ----------------------
