@@ -1,57 +1,88 @@
-import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import { recipe } from "@/db/schema";
-import { db } from "@/db/index";
+import { protectedProcedure, createTRPCRouter } from "@/trpc/init";
+import { recipes } from "@/db/schema";
+import { db } from "@/db";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
+import { and, count, desc, eq, ilike } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
+import { recipesInsertSchema, recipesUpdateSchema } from "../schemas";
 
 export const recipesRouter = createTRPCRouter({
-    getRecipeById: baseProcedure
-        .input(z.object({ id: z.string() }))
-        .query(async ({ input }) => {
-            const rows = await db.select().from(recipe).where(eq(recipe.id, input.id));
-            const row = rows[0];
-            if (!row) throw new Error("Recipe not found");
-            // Parse JSON fields
-            return {
-                ...row,
-                tags: row.tags ? JSON.parse(row.tags) : [],
-                ingredients: row.ingredients ? JSON.parse(row.ingredients) : [],
-                steps: row.steps ? JSON.parse(row.steps) : []
-            };
-        }),
+	getRecipeById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+		const [existingRecipe] = await db.select().from(recipes).where(eq(recipes.id, input.id));
 
-    addRecipe: baseProcedure
-        .input(z.object({
-            title: z.string(),
-            description: z.string(),
-            image: z.string().optional(),
-            time: z.string(),
-            rating: z.number().optional(),
-            tags: z.array(z.string()).optional(),
-            author: z.string(),
-            servings: z.number(),
-            difficulty: z.enum(["Easy", "Medium", "Hard"]),
-            cuisine: z.string().optional(),
-            ingredients: z.array(z.object({ item: z.string(), amount: z.string() })),
-            steps: z.array(z.string())
-        }))
-        .mutation(async ({ input }) => {
-            const id = crypto.randomUUID();
-            await db.insert(recipe).values({
-                id,
-                title: input.title,
-                description: input.description,
-                image: input.image ?? "/placeholder.png",
-                time: input.time,
-                rating: input.rating?.toString() ?? "0",
-                tags: JSON.stringify(input.tags ?? []),
-                author: input.author,
-                servings: input.servings.toString(),
-                difficulty: input.difficulty,
-                cuisine: input.cuisine ?? "",
-                ingredients: JSON.stringify(input.ingredients),
-                steps: JSON.stringify(input.steps)
-            });
-            return { id };
-        }),
+		if (!existingRecipe) {
+			throw new TRPCError({ code: "NOT_FOUND", message: `Recipe not found` });
+		}
+
+		return existingRecipe;
+	}),
+	getMany: protectedProcedure
+		.input(
+			z.object({
+				page: z.number().default(DEFAULT_PAGE),
+				pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
+				search: z.string().nullish(),
+			})
+		)
+		.query(async ({ input }) => {
+			const { page, pageSize, search } = input;
+
+			const data = await db
+				.select()
+				.from(recipes)
+				.where(search ? ilike(recipes.title, `%${search}%`) : undefined)
+				.orderBy(desc(recipes.createdAt))
+				.limit(pageSize)
+				.offset((page - 1) * pageSize);
+
+			const [total] = await db
+				.select({ count: count() })
+				.from(recipes)
+				.where(search ? ilike(recipes.title, `%${search}%`) : undefined);
+
+			const totalPages = Math.ceil(total.count / pageSize);
+
+			return {
+				items: data,
+				total: total.count,
+				totalPages,
+			};
+		}),
+	addRecipe: protectedProcedure.input(recipesInsertSchema).mutation(async ({ input, ctx }) => {
+		const [createdRecipe] = await db
+			.insert(recipes)
+			.values({
+				...input,
+				userId: ctx.auth.user.id,
+			})
+			.returning();
+
+		return createdRecipe;
+	}),
+	remove: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ input, ctx }) => {
+		const [deletedRecipe] = await db
+			.delete(recipes)
+			.where(and(eq(recipes.id, input.id), eq(recipes.userId, ctx.auth.user.id)))
+			.returning();
+
+		if (!deletedRecipe) {
+			throw new TRPCError({ code: "NOT_FOUND", message: `Recipe not found` });
+		}
+
+		return deletedRecipe;
+	}),
+	update: protectedProcedure.input(recipesUpdateSchema).mutation(async ({ input, ctx }) => {
+		const [updatedRecipe] = await db
+			.update(recipes)
+			.set(input)
+			.where(and(eq(recipes.id, input.id), eq(recipes.userId, ctx.auth.user.id)))
+			.returning();
+
+		if (!updatedRecipe) {
+			throw new TRPCError({ code: "NOT_FOUND", message: `Recipe not found` });
+		}
+
+		return updatedRecipe;
+	})
 });
