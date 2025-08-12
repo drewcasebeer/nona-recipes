@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { trpc } from "@/trpc/client";
+import { useTRPC } from "@/trpc/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,8 +11,9 @@ import { FloatingInput } from "@/components/ui/floatinginput";
 import { FloatingTextarea } from "@/components/ui/floatingtextarea";
 
 export default function NewRecipePage() {
+    const trpc = useTRPC();
     const router = useRouter();
-    const addRecipe = trpc.recipes.addRecipe.useMutation();
+    const addRecipe = trpc.recipes.create.mutationOptions();
 
     type Difficulty = "Easy" | "Medium" | "Hard";
 
