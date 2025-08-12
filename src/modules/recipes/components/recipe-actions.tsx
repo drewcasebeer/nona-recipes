@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import { Bookmark, Printer, Share2 } from "lucide-react";
+import { useState } from "react";
+import { Bookmark, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -10,50 +10,22 @@ type Props = {
 };
 
 export function RecipeActions({ title = "Recipe", id = "0" }: Props) {
-	const [saved, setSaved] = useState<boolean>(false);
-
-	const shareData = useMemo(
-		() => ({
-			title: `${title} · Recipe`,
-			text: `Check out this recipe: ${title}`,
-			url: typeof window !== "undefined" ? window.location.href : "",
-		}),
-		[title]
-	);
-
-	const onShare = useCallback(async () => {
-		try {
-			if (navigator.share) {
-				await navigator.share(shareData);
-			} else if (navigator.clipboard) {
-				await navigator.clipboard.writeText(shareData.url || "");
-				alert("Link copied to clipboard");
-			} else {
-				alert("Share not supported on this browser");
-			}
-		} catch (e) {
-			// User cancelled share or an error occurred
-		}
-	}, [shareData]);
+	const [favorited, setFavorited] = useState<boolean>(false);
 
 	return (
 		<div className="flex items-center gap-2">
 			<Button
-				variant={saved ? "default" : "outline"}
-				className={saved ? "bg-amber-600 hover:bg-amber-600/90" : ""}
-				onClick={() => setSaved(s => !s)}
-				aria-pressed={saved}
+				variant={favorited ? "default" : "outline"}
+				className={favorited ? "bg-primary hover:bg-primary/90" : ""}
+				onClick={() => setFavorited(s => !s)}
+				aria-pressed={favorited}
 			>
 				<Bookmark className="mr-2 h-4 w-4" />
-				{saved ? "Saved" : "Save"}
+				{favorited ? "Favorited" : "Favorite"}
 			</Button>
 			<Button variant="outline" onClick={() => window.print()}>
 				<Printer className="mr-2 h-4 w-4" />
 				Print
-			</Button>
-			<Button variant="outline" onClick={onShare}>
-				<Share2 className="mr-2 h-4 w-4" />
-				Share
 			</Button>
 		</div>
 	);
