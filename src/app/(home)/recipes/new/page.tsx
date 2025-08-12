@@ -9,11 +9,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { FloatingInput } from "@/components/ui/floatinginput";
 import { FloatingTextarea } from "@/components/ui/floatingtextarea";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function NewRecipePage() {
     const trpc = useTRPC();
     const router = useRouter();
-    const addRecipe = trpc.recipes.create.mutationOptions();
+    const queryClient = useQueryClient();
+    const addRecipe = useMutation(
+        trpc.recipes.create.mutationOptions({
+            onSuccess: async () => {
+                await queryClient.invalidateQueries(trpc.recipes.getMany.queryOptions({}));
+            },
+            onError: error => {
+                toast.error(error.message);
+
+                //TODO: Check if error code is "FORBIDDEN" and redirect to login
+            }
+        })
+    )
 
     type Difficulty = "Easy" | "Medium" | "Hard";
 
@@ -85,15 +98,16 @@ export default function NewRecipePage() {
         e.preventDefault();
         setSubmitting(true);
         try {
-            const res = await addRecipe.mutateAsync({
-                ...form,
-                rating: 0,  // Add a default rating
-                servings: Number(form.servings),
-                author: form.author || "Anonymous",
-                tags: form.tags || []
-            })
-            toast.success("Recipe submitted successfully!");
-            router.push(`/recipes/${res.id}`);
+            // TODO: Update to use new schema and react-hook-form
+            // const res = await addRecipe.mutate({
+            //     ...form,
+            //     rating: 0,  // Add a default rating
+            //     servings: Number(form.servings),
+            //     author: form.author || "Anonymous",
+            //     tags: form.tags || []
+            // })
+            // toast.success("Recipe submitted successfully!");
+            // router.push(`/recipes/${res.id}`);
         } catch (error) {
             console.error('Error submitting recipe:', error);
             //toast.error("Failed to submit recipe. Please try again.");
