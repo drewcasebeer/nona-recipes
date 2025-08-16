@@ -69,7 +69,6 @@ export const recipes = pgTable("recipes", {
   description: text("description"),
   servings: integer("servings"),
 	time: integer("time"), // in minutes
-	calories: integer("calories"),
 	heroImage: text("hero_image"), // URL to image
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
