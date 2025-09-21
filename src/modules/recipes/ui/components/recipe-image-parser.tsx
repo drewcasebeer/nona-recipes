@@ -34,16 +34,32 @@ export const RecipeImageParser = ({ onParseSuccess }: RecipeImageParserProps) =>
 		})
 	);
 
-	const handleParseImage = () => {
+	const readFileAsDataURL = (file: File): Promise<string> => {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				if (typeof reader.result === "string") {
+					resolve(reader.result);
+				} else {
+					reject(new Error("Failed to read file."));
+				}
+			}
+
+			reader.onerror = () => reject(new Error("Failed to read file."));
+			reader.readAsDataURL(file);
+		});
+	}
+
+	const handleParseImage = async () => {
 		if (!selectedFile) {
 			toast.error("Please select an image to parse.");
 			return;
 		}
 
-		// The TRPC mutation would handle the file upload.
-		// You'll need a new TRPC endpoint that can handle file uploads.
-		// For a simple example, we'll simulate the call.
-		parseImage.mutate({ image: 'abc' });
+		// Convert the image file to a base64 string
+		const imageData = await readFileAsDataURL(selectedFile);
+
+		parseImage.mutate({ image: imageData });
 	};
 
 	return (

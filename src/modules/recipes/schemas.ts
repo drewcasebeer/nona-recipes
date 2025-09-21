@@ -14,7 +14,7 @@ const recipesBaseSchema = z.object({
 		.int("Time must be an integer")
 		.min(0, "Time must be 0 or more") // allow 0 minutes (e.g., no-cook recipes)
 		.optional(),
-	heroImage: z.url("Hero image must be a valid URL").optional(),
+	heroImage: z.string("Hero image must be a valid URL").optional(),
 });
 
 /**

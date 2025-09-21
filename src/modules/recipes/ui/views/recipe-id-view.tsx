@@ -151,7 +151,7 @@ export const RecipeIdView = ({ recipeId }: Props) => {
 				{/* Hero image */}
 				<div className="mt-6 overflow-hidden rounded-xl">
 					<img
-						src={heroImage ?? "/placeholder.png"}
+						src={heroImage || "/placeholder.png"}
 						alt={`${title} photo`}
 						width={640}
 						height={360}

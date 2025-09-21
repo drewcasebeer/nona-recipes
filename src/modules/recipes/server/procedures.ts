@@ -12,63 +12,266 @@ import {
 } from "../schemas";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { nanoid } from "nanoid";
+import { OpenAI } from "openai";
 
-// NOTE: You will need to implement the actual AI parsing logic.
-// This is a placeholder function to simulate the process.
+// Initialize OpenAI client
+const openai = new OpenAI({
+	apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Hardcoded JSON Schema for recipeWithDetailsInsertSchema
+const recipeResponseSchema = {
+	type: "object",
+	properties: {
+		title: {
+			type: "string",
+			minLength: 1,
+			description: "The title of the recipe"
+		},
+		description: {
+			type: "string",
+			description: "A brief description of the recipe"
+		},
+		servings: {
+			type: "integer",
+			minimum: 1,
+			description: "Number of servings this recipe makes"
+		},
+		time: {
+			type: "integer", 
+			minimum: 0,
+			description: "Total time in minutes to prepare and cook the recipe"
+		},
+		heroImage: {
+			type: "string",
+			description: "URL to the recipe image"
+		},
+		ingredientGroups: {
+			type: "array",
+			minItems: 1,
+			items: {
+				type: "object",
+				properties: {
+					name: {
+						type: "string",
+						description: "Name of the ingredient group (e.g., 'Main ingredients', 'For garnish')"
+					},
+					sortOrder: {
+						type: "integer",
+						minimum: 0,
+						description: "Sort order for this group"
+					},
+					ingredients: {
+						type: "array",
+						minItems: 1,
+						items: {
+							type: "object",
+							properties: {
+								description: {
+									type: "string",
+									minLength: 1,
+									description: "Full ingredient description with quantity and unit"
+								}
+							},
+							required: ["description"],
+							additionalProperties: false
+						}
+					}
+				},
+				required: ["name", "sortOrder", "ingredients"],
+				additionalProperties: false
+			}
+		},
+		steps: {
+			type: "array",
+			minItems: 1,
+			items: {
+				type: "object",
+				properties: {
+					description: {
+						type: "string",
+						minLength: 1,
+						description: "Detailed step instruction"
+					},
+					sortOrder: {
+						type: "integer",
+						minimum: 0,
+						description: "Sort order for this step"
+					}
+				},
+				required: ["description", "sortOrder"],
+				additionalProperties: false
+			}
+		}
+	},
+	required: ["title", "description", "servings", "time", "heroImage", "ingredientGroups", "steps"],
+	additionalProperties: false
+} as const;
+
+// AI parsing function using OpenAI's GPT-4 Vision API with Structured Outputs
+// Structured Outputs ensures the response always matches our schema, eliminating JSON parsing errors
 const parseImageWithAI = async (imageData: string): Promise<z.infer<typeof recipeWithDetailsInsertSchema>> => {
-	// ----------------------------------------------------
-	// YOUR AI INTEGRATION CODE HERE
-	// This function would call an external AI service (e.g., OpenAI Vision, Google Cloud Vision, etc.)
-	// with the image data and prompt it to return a JSON object that matches your schema.
-	// ----------------------------------------------------
-
-	// Example: Simulate a successful response
-	const mockResponse = {
-		title: "AI-Parsed Chicken Noodle Soup",
-		description: "A delicious soup parsed from an image.",
-		servings: 4,
-		time: 45,
-		heroImage: "https://your-image-service.com/ai-parsed-image.jpg",
-		ingredientGroups: [
-			{
-				name: "Soup",
-				sortOrder: 0,
-				ingredients: [
-					{ description: "1 tbsp olive oil" },
-					{ description: "1 onion, chopped" },
-					{ description: "2 carrots, sliced" },
-					{ description: "2 celery stalks, sliced" },
-					{ description: "8 cups chicken broth" },
-					{ description: "2 cups cooked chicken, shredded" },
-				],
-			},
-			{
-				name: "Noodles",
-				sortOrder: 1,
-				ingredients: [{ description: "8 oz egg noodles" }],
-			},
-		],
-		steps: [
-			{ description: "Heat olive oil in a large pot.", sortOrder: 0 },
-			{ description: "Add onion, carrots, and celery and cook until softened.", sortOrder: 1 },
-			{ description: "Pour in chicken broth and bring to a boil. Add chicken and noodles.", sortOrder: 2 },
-			{ description: "Cook until noodles are tender. Serve hot.", sortOrder: 3 },
-		],
-	};
-
-	// Use your zod schema to validate the data returned by the AI.
-	// This step is crucial for data integrity and type safety.
-	const result = recipeWithDetailsInsertSchema.safeParse(mockResponse);
-
-	if (!result.success) {
-		console.error("AI returned invalid data:", result.error);
+	if (!process.env.OPENAI_API_KEY) {
 		throw new TRPCError({
-			code: "BAD_REQUEST",
-			message: "The AI failed to produce a valid recipe. Please try a different image or enter the recipe manually.",
+			code: "INTERNAL_SERVER_ERROR",
+			message: "OpenAI API key is not configured. Please set OPENAI_API_KEY environment variable.",
 		});
 	}
 
-	return result.data;
+	// Validate input
+	if (!imageData || typeof imageData !== 'string') {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: "Invalid image data provided.",
+		});
+	}
+
+	// Validate model
+	const model = process.env.OPENAI_MODEL;
+	if(!model) {
+		throw new TRPCError({
+			code: "INTERNAL_SERVER_ERROR",
+			message: "OpenAI model is not configured. Please set OPENAI_MODEL environment variable.",
+		});
+	}
+
+	// Create the prompt for recipe extraction with structured outputs
+	const prompt = `Analyze this recipe image and extract all recipe information. Your response will be automatically structured according to a predefined schema.
+
+Instructions:
+- Extract the recipe title, description, and any visible serving size or cooking time
+- List all visible ingredients with their exact quantities and units
+- Group ingredients logically if there are clear sections (e.g., "For sauce:", "For garnish:", etc.)
+- If no grouping is apparent, use "Ingredients" as the group name
+- Extract step-by-step cooking instructions in the correct order
+- Provide realistic estimates for missing information (servings, time) based on the recipe type
+- Be precise with measurements and clear with instructions
+- Set sortOrder starting from 0 for both ingredient groups and steps
+
+Focus on accuracy and completeness. Extract exactly what you see in the image.`;
+
+	try {
+		const response = await openai.responses.parse({
+			model: model,
+			input: [
+				{
+					role: "developer",
+					content: prompt,
+				},
+				{
+					role: "user",
+					content: [
+						{
+							type: "input_image",
+							detail: 'high',
+							image_url: imageData, // This should be a data URL (data:image/jpeg;base64,...) or a public URL
+						},
+					],
+				},
+			],
+			text: {
+				format: {
+					type: "json_schema",
+					name: "recipeResponseSchema",
+					strict: true,
+					schema: recipeResponseSchema,
+				},
+			},
+		});
+
+		const content = response.output_parsed;
+		if (!content) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "OpenAI returned an empty response.",
+			});
+		}
+
+		// Transform the response to match our Zod schema (handle optional fields)
+		// OpenAI's structured output ensures all required fields are present
+		const rawContent = content as {
+			title: string;
+			description: string;
+			servings: number;
+			time: number;
+			heroImage: string;
+			ingredientGroups: Array<{
+				name: string;
+				sortOrder: number;
+				ingredients: Array<{ description: string }>;
+			}>;
+			steps: Array<{
+				description: string;
+				sortOrder: number;
+			}>;
+		};
+
+		const transformedContent = {
+			title: rawContent.title,
+			description: rawContent.description?.trim() || undefined,
+			servings: rawContent.servings || undefined,
+			time: rawContent.time || undefined,
+			heroImage: rawContent.heroImage?.trim() || undefined,
+			ingredientGroups: rawContent.ingredientGroups.map((group) => ({
+				name: group.name?.trim() || undefined,
+				sortOrder: group.sortOrder,
+				ingredients: group.ingredients
+			})),
+			steps: rawContent.steps
+		};
+
+		// Validate against our Zod schema
+		const result = recipeWithDetailsInsertSchema.safeParse(transformedContent);
+		if (!result.success) {
+			console.error("Zod validation failed:", result.error);
+			console.error("Transformed content:", transformedContent);
+			throw new TRPCError({
+				code: "BAD_REQUEST",
+				message: "The AI response doesn't match our recipe schema after transformation.",
+			});
+		}
+
+		return result.data;
+	} catch (error) {
+		// Handle specific OpenAI errors
+		if (error instanceof OpenAI.APIError) {
+			console.error("OpenAI API Error:", error);
+			
+			if (error.status === 401) {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Invalid OpenAI API key configuration.",
+				});
+			} else if (error.status === 429) {
+				throw new TRPCError({
+					code: "TOO_MANY_REQUESTS",
+					message: "OpenAI API rate limit exceeded. Please try again later.",
+				});
+			} else if (error.status === 400) {
+				throw new TRPCError({
+					code: "BAD_REQUEST",
+					message: "Invalid image format or size. Please ensure the image is clear and in a supported format.",
+				});
+			}
+			
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: `OpenAI API error: ${error.message}`,
+			});
+		}
+
+		// Re-throw TRPC errors
+		if (error instanceof TRPCError) {
+			throw error;
+		}
+
+		// Handle unexpected errors
+		console.error("Unexpected error in parseImageWithAI:", error);
+		throw new TRPCError({
+			code: "INTERNAL_SERVER_ERROR",
+			message: "An unexpected error occurred during image parsing.",
+		});
+	}
 };
 
 export const recipesRouter = createTRPCRouter({
