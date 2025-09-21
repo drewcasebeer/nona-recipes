@@ -135,7 +135,6 @@ export const recipesRouter = createTRPCRouter({
 			steps,
 		};
 	}),
-
 	getMany: protectedProcedure
 		.input(
 			z.object({
@@ -160,7 +159,7 @@ export const recipesRouter = createTRPCRouter({
 				.select({
 					...getTableColumns(recipes),
 					rating: ratingsSub.rating,
-					author: sql`${user.name}`.as("author"),
+					author: sql<string>`${user.name}`.as("author"),
 				})
 				.from(recipes)
 				.leftJoin(ratingsSub, eq(ratingsSub.recipeId, recipes.id))
@@ -181,6 +180,32 @@ export const recipesRouter = createTRPCRouter({
 				totalPages: Math.ceil(total.count / pageSize),
 			};
 		}),
+	getTopRated: protectedProcedure.input(z.object({ limit: z.number().min(1).max(100).default(10) }).nullish()).query(async ({ input }) => {
+		const limit = input?.limit ?? 10;
+
+		const ratingsSub = db
+			.select({
+				recipeId: recipeRatings.recipeId,
+				rating: sql<number>`CAST(avg(${recipeRatings.rating}) AS FLOAT)`.as("rating"),
+			})
+			.from(recipeRatings)
+			.groupBy(recipeRatings.recipeId)
+			.as("ratings");
+
+		const data = await db
+			.select({
+				...getTableColumns(recipes),
+				rating: ratingsSub.rating,
+				author: sql<string>`${user.name}`.as("author"),
+			})
+			.from(recipes)
+			.innerJoin(ratingsSub, eq(ratingsSub.recipeId, recipes.id))
+			.leftJoin(user, eq(user.id, recipes.userId))
+			.orderBy(desc(ratingsSub.rating))
+			.limit(limit);
+
+		return data;
+	}),
 
 	// -----------------------
 	// Mutations (flat)

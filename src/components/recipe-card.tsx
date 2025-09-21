@@ -5,35 +5,31 @@ import { Clock, Flame, Heart, Star } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { RecipeGetOne } from "@/modules/recipes/types";
 
 type Props = {
-	id?: string;
-	title?: string;
-	description?: string;
-	image?: string;
-	time?: string;
-	rating?: number;
-	tags?: string[];
-	author?: string;
+	recipe: RecipeGetOne;
 };
 
-export function RecipeCard({
-	id = "0",
-	title = "Recipe title",
-	description = "Short recipe description goes here.",
-	image = "/delicious-recipe.png",
-	time = "30 min",
-	rating = 4.5,
-	tags = ["Easy"],
-	author = "Chef",
-}: Props) {
+const timeString = (time: number) => {
+	if (time < 60) return `${time} min${time === 1 ? "" : "s"}`;
+	const hours = Math.floor(time / 60);
+	const minutes = time % 60;
+	return `${hours} hr${hours === 1 ? "" : "s"}${minutes > 0 ? ` ${minutes} min${minutes === 1 ? "" : "s"}` : ""}`;
+}
+
+export function RecipeCard({ recipe }: Props) {
+	const { id, title, description, heroImage, rating, author } = recipe;
+
+	const time = recipe.time ? timeString(recipe.time) : null;
+
 	return (
 		<Card className="overflow-hidden py-0">
 			<CardHeader className="relative px-0">
 				<Link href={`/recipes/${id}`} className="block">
 					<div className="aspect-[4/3] w-full overflow-hidden">
 						<img
-							src={image || "/placeholder.png"}
+							src={heroImage || "/placeholder.png"}
 							alt={`${title} photo`}
 							width={800}
 							height={600}
@@ -43,11 +39,11 @@ export function RecipeCard({
 				</Link>
 
 				<div className="absolute left-2 top-2 flex gap-2">
-					<Badge className="bg-black/70 text-white backdrop-blur">{time}</Badge>
-					<Badge variant="secondary" className="backdrop-blur">
+					{time && <Badge className="bg-black/70 text-white backdrop-blur">{time}</Badge>}
+					{rating && <Badge variant="secondary" className="backdrop-blur">
 						<Star className="mr-1 h-3.5 w-3.5 fill-amber-500 text-amber-500" />
 						{rating.toFixed(1)}
-					</Badge>
+					</Badge>}
 				</div>
 
 				<Button
@@ -69,11 +65,11 @@ export function RecipeCard({
 				</h3>
 				<p className="line-clamp-2 text-sm text-muted-foreground">{description}</p>
 				<div className="flex flex-wrap gap-1">
-					{tags.map(t => (
+					{/* {tags?.map(t => (
 						<Badge key={`${id}-${t}`} variant="outline" className="rounded-full">
 							{t}
 						</Badge>
-					))}
+					))} */}
 				</div>
 			</CardContent>
 

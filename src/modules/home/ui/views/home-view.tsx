@@ -1,6 +1,6 @@
 "use client";
 
-import { Featured } from "../components/featured";
+import { Featured } from "@/modules/recipes/ui/components/featured";
 import { HomeHero } from "../components/home-hero";
 
 export const HomeView = () => {
