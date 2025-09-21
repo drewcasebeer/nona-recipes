@@ -88,7 +88,7 @@ export const recipesRouter = createTRPCRouter({
 		const [existingRecipe] = await db
 			.select({
 				...getTableColumns(recipes),
-				rating: ratingsSub.rating,
+				rating: sql<number>`COALESCE(${ratingsSub.rating}, 0)`.as("rating"),
 				author: sql<string>`${user.name}`.as("author"),
 			})
 			.from(recipes)
@@ -104,7 +104,25 @@ export const recipesRouter = createTRPCRouter({
 	}),
 
 	getOneWithDetails: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
-		const [recipe] = await db.select().from(recipes).where(eq(recipes.id, input.id));
+		const ratingsSub = db
+			.select({
+				recipeId: recipeRatings.recipeId,
+				rating: sql<number>`CAST(avg(${recipeRatings.rating}) AS FLOAT)`.as("rating"),
+			})
+			.from(recipeRatings)
+			.groupBy(recipeRatings.recipeId)
+			.as("ratings");
+
+		const [recipe] = await db
+			.select({
+				...getTableColumns(recipes),
+				rating: sql<number>`COALESCE(${ratingsSub.rating}, 0)`.as("rating"),
+				author: sql<string>`${user.name}`.as("author"),
+			})
+			.from(recipes)
+			.leftJoin(ratingsSub, eq(ratingsSub.recipeId, recipes.id))
+			.leftJoin(user, eq(user.id, recipes.userId))
+			.where(eq(recipes.id, input.id));
 
 		if (!recipe) {
 			throw new TRPCError({ code: "NOT_FOUND", message: `Recipe not found` });
@@ -158,7 +176,7 @@ export const recipesRouter = createTRPCRouter({
 			const data = await db
 				.select({
 					...getTableColumns(recipes),
-					rating: ratingsSub.rating,
+					rating: sql<number>`COALESCE(${ratingsSub.rating}, 0)`.as("rating"),
 					author: sql<string>`${user.name}`.as("author"),
 				})
 				.from(recipes)
@@ -195,7 +213,7 @@ export const recipesRouter = createTRPCRouter({
 		const data = await db
 			.select({
 				...getTableColumns(recipes),
-				rating: ratingsSub.rating,
+				rating: sql<number>`COALESCE(${ratingsSub.rating}, 0)`.as("rating"),
 				author: sql<string>`${user.name}`.as("author"),
 			})
 			.from(recipes)

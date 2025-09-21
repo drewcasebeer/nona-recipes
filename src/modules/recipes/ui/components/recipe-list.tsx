@@ -1,4 +1,4 @@
-import { RecipeCard } from "@/components/recipe-card";
+import { RecipeCard } from "@/modules/recipes/ui/components/recipe-card";
 import { RecipeGetMany } from "../../types";
 
 interface Props {

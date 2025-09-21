@@ -6,22 +6,18 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RecipeGetOne } from "@/modules/recipes/types";
+import { convertTimeToString } from "@/lib/utils";
 
 type Props = {
 	recipe: RecipeGetOne;
 };
 
-const timeString = (time: number) => {
-	if (time < 60) return `${time} min${time === 1 ? "" : "s"}`;
-	const hours = Math.floor(time / 60);
-	const minutes = time % 60;
-	return `${hours} hr${hours === 1 ? "" : "s"}${minutes > 0 ? ` ${minutes} min${minutes === 1 ? "" : "s"}` : ""}`;
-}
+
 
 export function RecipeCard({ recipe }: Props) {
 	const { id, title, description, heroImage, rating, author } = recipe;
 
-	const time = recipe.time ? timeString(recipe.time) : null;
+	const time = recipe.time ? convertTimeToString(recipe.time) : null;
 
 	return (
 		<Card className="overflow-hidden py-0">

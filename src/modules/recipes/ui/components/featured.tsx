@@ -6,7 +6,7 @@ import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import { EmptyState } from "@/components/empty-state";
 
-import { RecipeCard } from "@/components/recipe-card";
+import { RecipeCard } from "@/modules/recipes/ui/components/recipe-card";
 import { Button } from "@/components/ui/button";
 import { ChefHat } from "lucide-react";
 

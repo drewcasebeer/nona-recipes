@@ -1,11 +1,11 @@
 import { ResponseDialog } from "@/components/responsive-dialog";
 import { RecipeForm } from "./recipe-form";
-import { RecipeGetOne } from "../../types";
+import { RecipeGetOneWithDetails } from "../../types";
 
 interface UpdateRecipeDialogProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	initialValues: RecipeGetOne;
+	initialValues: RecipeGetOneWithDetails;
 }
 
 export const UpdateRecipeDialog = ({ open, onOpenChange, initialValues }: UpdateRecipeDialogProps) => {
