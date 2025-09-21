@@ -2,7 +2,7 @@ import { protectedProcedure, createTRPCRouter } from "@/trpc/init";
 import { recipes, recipeRatings, ingredientGroups, ingredients, recipeSteps, user } from "@/db/schema";
 import { db } from "@/db";
 import { z } from "zod";
-import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
+import { and, count, desc, eq, getTableColumns, ilike, inArray, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import {
 	recipesInsertSchema,
@@ -136,7 +136,7 @@ export const recipesRouter = createTRPCRouter({
 
 		const groupIds = groups.map(g => g.id);
 		const groupIngredients =
-			groupIds.length > 0 ? await db.select().from(ingredients).where(eq(ingredients.groupId, groupIds[0])) : [];
+			groupIds.length > 0 ? await db.select().from(ingredients).where(inArray(ingredients.groupId, groupIds)) : [];
 
 		const steps = await db
 			.select()
