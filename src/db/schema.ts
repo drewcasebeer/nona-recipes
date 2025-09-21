@@ -109,6 +109,7 @@ export const ingredients = pgTable("ingredients", {
 		.notNull()
 		.references(() => ingredientGroups.id, { onDelete: "cascade" }),
   description: text('description').notNull(),
+	sortOrder: integer("sort_order").default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
