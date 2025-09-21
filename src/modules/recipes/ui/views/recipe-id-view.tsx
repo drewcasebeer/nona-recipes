@@ -1,4 +1,3 @@
-
 "use client";
 
 import { ErrorState } from "@/components/error-state";
@@ -8,15 +7,16 @@ import { Badge } from "@/components/ui/badge";
 import { ChefHat, Clock, Flame, Leaf, ListChecks, Star } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { RecipeActions } from "../../components/recipe-actions";
+import { RecipeActions } from "../components/recipe-actions";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
-import { IngredientChecklist } from "../../components/ingredient-checklist";
-import { StepList } from "../../components/step-list";
+import { IngredientChecklist } from "../components/ingredient-checklist";
+import { StepList } from "../components/step-list";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Breadcrumb, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 interface Props {
 	recipeId: string;
@@ -44,31 +44,19 @@ export const RecipeIdView = ({ recipeId }: Props) => {
 	return (
 		<div className="mx-auto max-w-6xl px-4 py-6">
 			{/* Breadcrumbs */}
-			<nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-				<ol className="flex items-center gap-2">
-					<li>
-						<Link href="/" className="hover:text-foreground">
-							Home
-						</Link>
-					</li>
-					<li aria-hidden="true" className="select-none">
-						{" "}
-						/{" "}
-					</li>
-					<li>
-						<Link href="/#featured" className="hover:text-foreground">
-							Recipes
-						</Link>
-					</li>
-					<li aria-hidden="true" className="select-none">
-						{" "}
-						/{" "}
-					</li>
-					<li className="text-foreground" aria-current="page">
-						{data.title}
-					</li>
-				</ol>
-			</nav>
+			<Breadcrumb>
+				<BreadcrumbList>
+					<BreadcrumbLink href="/">Home</BreadcrumbLink>
+
+					<BreadcrumbSeparator />
+
+					<BreadcrumbLink href="/#featured">Recipes</BreadcrumbLink>
+
+					<BreadcrumbSeparator />
+
+					<BreadcrumbLink href={`/recipes/${recipeId}`}>{data.title}</BreadcrumbLink>
+				</BreadcrumbList>
+			</Breadcrumb>
 
 			{/* Header */}
 			<header className="mt-4">

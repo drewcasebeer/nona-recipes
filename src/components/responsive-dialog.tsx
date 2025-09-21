@@ -18,13 +18,13 @@ export const ResponseDialog = ({ title, description, children, open, onOpenChang
 	if (isMobile) {
 		return (
 			<Drawer open={open} onOpenChange={onOpenChange}>
-				<DrawerContent>
-					<DrawerHeader>
+				<DrawerContent className="max-h-[95vh]">
+					<DrawerHeader className="flex-shrink-0">
 						<DrawerTitle>{title}</DrawerTitle>
 						<DrawerDescription>{description}</DrawerDescription>
 					</DrawerHeader>
 
-					<div className="p-4">{children}</div>
+					<div className="flex-1 overflow-y-auto px-4 pb-4">{children}</div>
 				</DrawerContent>
 			</Drawer>
 		);
@@ -32,13 +32,13 @@ export const ResponseDialog = ({ title, description, children, open, onOpenChang
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent>
+			<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
 					<DialogDescription>{description}</DialogDescription>
 				</DialogHeader>
 
-				{children}
+				<div className="mt-4">{children}</div>
 			</DialogContent>
 		</Dialog>
 	);
