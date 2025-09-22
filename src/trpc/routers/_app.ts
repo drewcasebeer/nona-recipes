@@ -2,10 +2,10 @@
 // import { meetingsRouter } from "@/modules/meetings/server/procedures";
 
 import { createTRPCRouter } from "../init";
+import { recipesRouter } from "@/modules/recipes/server/procedures";
 
 export const appRouter = createTRPCRouter({
-	// agents: agentsRouter,
-	// meetings: meetingsRouter,
+	recipes: recipesRouter,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;
