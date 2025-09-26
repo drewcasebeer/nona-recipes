@@ -30,9 +30,9 @@ export const HomeHero = () => {
 					</div>
 
 					<div className="relative">
-						<div className="aspect-[4/3] w-full overflow-hidden rounded-2xl border shadow-sm">
+						<div className="w-full shadow-sm">
 							<Image
-								src="/chef-ingredients.png"
+								src="/logo.png"
 								alt="Chef preparing fresh ingredients"
 								width={800}
 								height={600}
@@ -41,7 +41,7 @@ export const HomeHero = () => {
 							/>
 						</div>
 						
-						<Card className="absolute -bottom-6 -left-6 hidden w-52 rotate-[-3deg] sm:block">
+						<Card className="absolute -bottom-6 -left-24 hidden w-52 rotate-[-3deg] sm:block">
 							<CardHeader className="pb-2">
 								<CardTitle className="flex items-center gap-2 text-base">
 									<Flame className="h-4 w-4 text-amber-600" />

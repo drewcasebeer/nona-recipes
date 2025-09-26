@@ -16,6 +16,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { APP_NAME } from "@/constants";
+import Image from "next/image";
 
 const formSchema = z.object({
 	email: z.email(),
@@ -171,7 +172,7 @@ export const SignInView = () => {
 					</Form>
 
 					<div className="bg-radial from-sidebar-accent to-sidebar relative hidden md:flex flex-col gap-y-4 items-center justify-center">
-						<img src="/logo.png" alt="Image" className="h-[92px] w-[92px]" />
+						<Image src="/logo.png" alt="Image" className="h-[92px] w-[92px]" />
 						<p className="text-2xl font-semibold text-white">{APP_NAME}</p>
 					</div>
 				</CardContent>
