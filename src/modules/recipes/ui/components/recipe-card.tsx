@@ -20,7 +20,7 @@ export function RecipeCard({ recipe }: Props) {
 	const time = recipe.time ? convertTimeToString(recipe.time) : null;
 
 	return (
-		<Card className="overflow-hidden py-0">
+		<Card className="flex h-full flex-col overflow-hidden py-0">
 			<CardHeader className="relative px-0">
 				<Link href={`/recipes/${id}`} className="block">
 					<div className="aspect-[4/3] w-full overflow-hidden">
@@ -53,7 +53,7 @@ export function RecipeCard({ recipe }: Props) {
 				</Button>
 			</CardHeader>
 
-			<CardContent className="space-y-2 p-4">
+			<CardContent className="flex-1 space-y-2 p-4">
 				<h3 className="line-clamp-2 text-base font-semibold">
 					<Link href={`/recipes/${id}`} className="hover:underline">
 						{title}
