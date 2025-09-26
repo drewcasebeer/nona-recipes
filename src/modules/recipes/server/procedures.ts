@@ -401,7 +401,7 @@ export const recipesRouter = createTRPCRouter({
 				totalPages: Math.ceil(total.count / pageSize),
 			};
 		}),
-	getTopRated: protectedProcedure.input(z.object({ limit: z.number().min(1).max(100).default(10) }).nullish()).query(async ({ input }) => {
+	getTopRated: protectedProcedure.input(z.object({ limit: z.number().min(1).max(100).default(9) }).nullish()).query(async ({ input }) => {
 		const limit = input?.limit ?? 10;
 
 		const ratingsSub = db
