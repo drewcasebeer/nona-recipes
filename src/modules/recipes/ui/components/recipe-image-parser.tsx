@@ -47,7 +47,6 @@ export const RecipeImageParser = ({ onParseSuccess }: RecipeImageParserProps) =>
 	const parseImage = useMutation(
 		trpc.recipes.parseImage.mutationOptions({
 			onSuccess: data => {
-				console.log({data})
 				onParseSuccess(data); // Pass the parsed data back to the parent form
 				toast.success("Form populated from image!");
 			},
