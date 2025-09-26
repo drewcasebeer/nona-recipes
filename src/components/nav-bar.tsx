@@ -5,7 +5,6 @@ import { Menu, X } from "lucide-react";
 import { APP_NAME } from "@/constants";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { DarkModeToggle } from "./dark-mode-toggle";
 import Image from "next/image";
 import { UserButton } from "./user-button";
 import { useIsMobile } from "@/hooks/use-mobile";

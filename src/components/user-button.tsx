@@ -3,9 +3,14 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
+	DropdownMenuPortal,
 	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -18,11 +23,12 @@ import {
 	DrawerTrigger,
 } from "@/components/ui/drawer";
 import { authClient } from "@/lib/auth-client";
-import { ChevronDown, LogOutIcon } from "lucide-react";
+import { LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "./ui/skeleton";
+import { ThemeChanger } from "./theme-changer";
 
 export const UserButton = () => {
 	const router = useRouter();
@@ -64,6 +70,8 @@ export const UserButton = () => {
 						<DrawerDescription>{data.user.email}</DrawerDescription>
 					</DrawerHeader>
 
+					<ThemeChanger mobile />
+
 					<DrawerFooter>
 						<Button variant="outline" onClick={onLogout}>
 							<LogOutIcon className="size-4 text-black" />
@@ -88,12 +96,27 @@ export const UserButton = () => {
 			</DropdownMenuTrigger>
 
 			<DropdownMenuContent align="end" side="right" className="w-72">
-				<DropdownMenuLabel>
-					<div className="flex flex-col gap-1">
-						<span className="font-medium truncate">{data.user.name}</span>
-						<span className="text-sm font-normal text-muted-foreground truncate">{data.user.email}</span>
-					</div>
-				</DropdownMenuLabel>
+				<DropdownMenuGroup>
+					<DropdownMenuLabel>
+						<div className="flex flex-col gap-1">
+							<span className="font-medium truncate">{data.user.name}</span>
+							<span className="text-sm font-normal text-muted-foreground truncate">{data.user.email}</span>
+						</div>
+					</DropdownMenuLabel>
+				</DropdownMenuGroup>
+
+				<DropdownMenuSeparator />
+
+				<DropdownMenuGroup>
+					<DropdownMenuSub>
+						<DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
+						<DropdownMenuPortal>
+							<DropdownMenuSubContent>
+								<ThemeChanger />
+							</DropdownMenuSubContent>
+						</DropdownMenuPortal>
+					</DropdownMenuSub>
+				</DropdownMenuGroup>
 
 				<DropdownMenuSeparator />
 
