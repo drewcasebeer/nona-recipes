@@ -39,20 +39,9 @@ const getDropZoneLabel = ({ ready }: LabelContentProps) => {
 	);
 };
 
-const getAllowedContent = (test) => {
-	console.log({test});
-	return (
-		<div className="text-xs text-gray-400 mt-2">
-			<p>Allowed file types: .jpg, .jpeg, .png</p>
-			<p>Max file size: 4MB</p>
-		</div>
-	);
-}
-
 export const RecipeImageParser = ({ onParseSuccess }: RecipeImageParserProps) => {
 	const trpc = useTRPC();
 	const [loading, setLoading] = useState(false);
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 	// This mutation will be a new endpoint in your TRPC router
 	const parseImage = useMutation(
@@ -69,34 +58,10 @@ export const RecipeImageParser = ({ onParseSuccess }: RecipeImageParserProps) =>
 		})
 	);
 
-	const readFileAsDataURL = (file: File): Promise<string> => {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = () => {
-				if (typeof reader.result === "string") {
-					resolve(reader.result);
-				} else {
-					reject(new Error("Failed to read file."));
-				}
-			}
-
-			reader.onerror = () => reject(new Error("Failed to read file."));
-			reader.readAsDataURL(file);
-		});
-	}
-
 	const handleParseImage = async (results: ClientUploadedFileData<{
     url: string;
 }>[]) => {
-		// if (!selectedFile) {
-		// 	toast.error("Please select an image to parse.");
-		// 	return;
-		// }
-
 		const imageUrl = results?.[0]?.ufsUrl;
-
-		// Convert the image file to a base64 string
-		// const imageData = await readFileAsDataURL(selectedFile);
 
 		setLoading(true);
 		parseImage.mutate({ imageUrl });
@@ -118,10 +83,6 @@ export const RecipeImageParser = ({ onParseSuccess }: RecipeImageParserProps) =>
 							Upload an image of a recipe to automatically fill out the form.
 						</p>
 						<div className="flex gap-2 items-end">
-							{/* <Input type="file" accept="image/*" onChange={e => setSelectedFile(e.target.files?.[0] || null)} />
-						<Button type="button" onClick={handleParseImage} disabled={!selectedFile || parseImage.isPending}>
-							{parseImage.isPending ? "Parsing..." : "Parse Image"}
-						</Button> */}
 							<UploadDropzone
 								className="w-full ut-button:bg-primary ut-button:text-black ut-button:px-2"
 								endpoint="recipeParserImageUploader"
@@ -131,7 +92,6 @@ export const RecipeImageParser = ({ onParseSuccess }: RecipeImageParserProps) =>
 								}}
 								content={{
 									label: getDropZoneLabel,
-									// 	allowedContent: getAllowedContent
 								}}
 							/>
 						</div>
