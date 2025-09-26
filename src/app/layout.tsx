@@ -14,7 +14,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
 	title: "Nona's Recipes",
-	description: "Recipe's from Nona's Kitchen",
+	description: "Recipes from Nona's Kitchen",
 };
 
 export default function RootLayout({
