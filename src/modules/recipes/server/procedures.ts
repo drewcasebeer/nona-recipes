@@ -420,7 +420,7 @@ export const recipesRouter = createTRPCRouter({
 				author: sql<string>`${user.name}`.as("author"),
 			})
 			.from(recipes)
-			.innerJoin(ratingsSub, eq(ratingsSub.recipeId, recipes.id))
+			.leftJoin(ratingsSub, eq(ratingsSub.recipeId, recipes.id))
 			.leftJoin(user, eq(user.id, recipes.userId))
 			.orderBy(desc(ratingsSub.rating))
 			.limit(limit);
@@ -591,13 +591,17 @@ export const recipesRouter = createTRPCRouter({
 	parseImage: protectedProcedure
 		.input(
 			z.object({
-				image: z.string(), // This would be a base64 string or a URL
+				imageUrl: z.string(), // This would be a base64 string or a URL
 			})
 		)
 		.output(recipeWithDetailsInsertSchema) // Ensure the output matches your schema
 		.mutation(async ({ input }) => {
 			try {
-				const parsedData = await parseImageWithAI(input.image);
+				const parsedData = await parseImageWithAI(input.imageUrl);
+
+				// Replace Hero Image with imageUrl
+				parsedData.heroImage = input.imageUrl;
+
 				return parsedData;
 			} catch (error) {
 				if (error instanceof TRPCError) {

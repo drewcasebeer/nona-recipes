@@ -5,6 +5,8 @@ import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from "nuqs/adapters/next";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Analytics } from "@vercel/analytics/next";
+
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -28,6 +30,7 @@ export default function RootLayout({
 						<ThemeProvider attribute="class" defaultTheme="system" themes={['light', 'dark', 'system', 'tangerine-light', 'tangerine-dark']} enableSystem disableTransitionOnChange>
 							<Toaster />
 							{children}
+							<Analytics />
 						</ThemeProvider>
 					</body>
 				</html>
