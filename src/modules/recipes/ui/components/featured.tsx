@@ -9,9 +9,11 @@ import { EmptyState } from "@/components/empty-state";
 import { RecipeCard } from "@/modules/recipes/ui/components/recipe-card";
 import { Button } from "@/components/ui/button";
 import { ChefHat } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export const Featured = () => {
 	const trpc = useTRPC();
+	const router = useRouter();
 	const { data, isError, isLoading } = useQuery(
 		trpc.recipes.getTopRated.queryOptions({})
 	);
@@ -47,7 +49,7 @@ export const Featured = () => {
 			</div>
 
 			<div className="mt-8 flex justify-center">
-				<Button className="bg-primary hover:bg-primary/90">
+				<Button className="bg-primary hover:bg-primary/90" onClick={() => router.push('/recipes')}>
 					<ChefHat className="mr-2 h-4 w-4" />
 					Discover more
 				</Button>
