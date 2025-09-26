@@ -17,12 +17,7 @@ export const HomeHero = () => {
 							slow Sunday feasts, we&apos;ve got you covered.
 						</p>
 						<div className="mt-6">
-							<SearchBar
-								placeholder="Search recipes, ingredients, cuisines..."
-								onSearch={(query) => {
-									console.log("Search:", query);
-								}}
-							/>
+							<SearchBar placeholder="Search recipes, ingredients, cuisines..." />
 						</div>
 						<div className="mt-4 flex flex-wrap items-center gap-2">
 							<span className="text-sm text-muted-foreground">Popular:</span>
