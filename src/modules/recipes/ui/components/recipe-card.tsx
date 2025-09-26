@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RecipeGetOne } from "@/modules/recipes/types";
 import { convertTimeToString } from "@/lib/utils";
+import Image from "next/image";
 
 type Props = {
 	recipe: RecipeGetOne;
@@ -24,7 +25,7 @@ export function RecipeCard({ recipe }: Props) {
 			<CardHeader className="relative px-0">
 				<Link href={`/recipes/${id}`} className="block">
 					<div className="aspect-[4/3] w-full overflow-hidden">
-						<img
+						<Image
 							src={heroImage || "/placeholder.png"}
 							alt={`${title} photo`}
 							width={800}
@@ -36,10 +37,12 @@ export function RecipeCard({ recipe }: Props) {
 
 				<div className="absolute left-2 top-2 flex gap-2">
 					{time && <Badge className="bg-black/70 text-white backdrop-blur">{time}</Badge>}
-					{rating && <Badge variant="secondary" className="backdrop-blur">
-						<Star className="mr-1 h-3.5 w-3.5 fill-amber-500 text-amber-500" />
-						{rating.toFixed(1)}
-					</Badge>}
+					{rating && (
+						<Badge variant="secondary" className="backdrop-blur">
+							<Star className="mr-1 h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+							{rating.toFixed(1)}
+						</Badge>
+					)}
 				</div>
 
 				<Button

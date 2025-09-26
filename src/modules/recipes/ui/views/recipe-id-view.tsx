@@ -19,6 +19,7 @@ import { useState } from "react";
 import { useConfirm } from "../../hooks/use-confirm";
 import { convertTimeToString } from "@/lib/utils";
 import { IngredientGroup } from "../components/ingredient-group";
+import Image from "next/image";
 
 interface Props {
 	recipeId: string;
@@ -121,7 +122,12 @@ export const RecipeIdView = ({ recipeId }: Props) => {
 									Edit
 								</Button>
 
-								<Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-600/10 focus:ring-red-600" onClick={handleRemoveRecipe} disabled={removeRecipe.isPending}>
+								<Button
+									variant="outline"
+									className="border-red-600 text-red-600 hover:bg-red-600/10 focus:ring-red-600"
+									onClick={handleRemoveRecipe}
+									disabled={removeRecipe.isPending}
+								>
 									<Trash className="mr-2 h-4 w-4" />
 									Delete
 								</Button>
@@ -150,7 +156,7 @@ export const RecipeIdView = ({ recipeId }: Props) => {
 
 				{/* Hero image */}
 				<div className="mt-6 overflow-hidden rounded-xl">
-					<img
+					<Image
 						src={heroImage || "/placeholder.png"}
 						alt={`${title} photo`}
 						width={640}
@@ -170,8 +176,10 @@ export const RecipeIdView = ({ recipeId }: Props) => {
 									<h2 className="text-xl font-semibold">Ingredients</h2>
 									<div className="text-xs text-muted-foreground">Servings: {servings}</div>
 								</div>
-								
-								{ingredientGroups.map(ingredientGroup => <IngredientGroup key={ingredientGroup.id} ingredientGroup={ingredientGroup} />)}
+
+								{ingredientGroups.map(ingredientGroup => (
+									<IngredientGroup key={ingredientGroup.id} ingredientGroup={ingredientGroup} />
+								))}
 							</CardContent>
 						</Card>
 
